@@ -1,0 +1,31 @@
+name: Transcribe Audio
+
+on:
+  push:
+    paths:
+      - 'audio/**'
+      - '.github/workflows/transcribe-audio.yml'
+
+jobs:
+  transcribe:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install google-cloud-speech
+
+    - name: Transcribe audio
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.KMOM }}
+      run: |
+        python transcribe.py audio/input.mp3
